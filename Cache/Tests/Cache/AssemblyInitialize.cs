@@ -5,13 +5,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Tests
 {
     [TestClass]
-    public class CacheLibTest
+    public class AssemblyInitialize
     {
-        [TestMethod]
-        public void LogDebug()
+        [AssemblyInitialize]
+        public static void AssemblyInit(TestContext context)
         {
             CacheLib.Initialize();
-            CacheLib.LogDebug("debug test string");
         }
     }
 }

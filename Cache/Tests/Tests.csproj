@@ -48,7 +48,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CacheLibTest.cs" />
+    <Compile Include="Cache\AssemblyInitialize.cs" />
+    <Compile Include="Cache\CacheLibTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
