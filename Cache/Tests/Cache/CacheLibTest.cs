@@ -2,7 +2,7 @@
 using Cache;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests
+namespace Tests.Cache
 {
     [TestClass]
     public class CacheLibTest
