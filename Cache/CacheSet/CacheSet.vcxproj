@@ -156,8 +156,8 @@
     <Image Include="app.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Cache\Cache.csproj">
-      <Project>{f51d586e-15ac-4cf6-a5c0-67dffe20a663}</Project>
+    <ProjectReference Include="..\SharedLibrary\SharedLibrary.csproj">
+      <Project>{e0445092-a3c2-46a7-83d7-8cac3f67a657}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

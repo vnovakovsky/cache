@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CacheSet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Cache
     {
         public Set(int numberOfLines, int wordsInLine, int wordSize)
         {
+            SetProxy setProxy = new SetProxy(4, 2, 16);
         }
     }
 }
