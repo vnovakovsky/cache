@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheSet\SetProxyTest.cs" />
     <Compile Include="Cache\AssemblyInitialize.cs" />
     <Compile Include="Cache\CacheLibTest.cs" />
     <Compile Include="Cache\StorageTest.cs" />
@@ -60,6 +61,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CacheSet\CacheSet.vcxproj">
+      <Project>{0a74730a-7399-4abd-86ee-f12acaa446ff}</Project>
+      <Name>CacheSet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Cache\Cache.csproj">
       <Project>{f51d586e-15ac-4cf6-a5c0-67dffe20a663}</Project>
       <Name>Cache</Name>
