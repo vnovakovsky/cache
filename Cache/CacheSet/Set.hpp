@@ -42,6 +42,12 @@ namespace cache
 	public:
 		Set(int numberOfLines);
 		void PutWord(Tag firstTag, Tag currentTag, int index, void* data, int length, bool isFinal);
+		int FindLine(Tag tag);
+		void* FindWord(Tag tag, int line, int* length);
+		bool inRange(Tag low, Tag high, Tag x)
+		{
+			return (low <= x && x <= high);
+		}
 	};
 
 
