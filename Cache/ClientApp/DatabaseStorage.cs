@@ -6,12 +6,12 @@ using System.Globalization;
 
 namespace ClientApp
 {
-    class DatabaseStorage<Key, Word> : Cache.IStorage<Key>
+    class DatabaseStorage<Key, Value> : Cache.IStorage<Key>
     {
-        private Dictionary<Key, Word> database_;
+        private Dictionary<Key, Value> database_;
         internal DatabaseStorage()
         {
-            database_ = new Dictionary<Key, Word>();
+            database_ = new Dictionary<Key, Value>();
         }
         public byte[] ReadWord(Key key)
         {
@@ -19,6 +19,10 @@ namespace ClientApp
         }
 
         public void WriteWord(Key key, byte[] binWord)
+        {
+            throw new NotImplementedException();
+        }
+        public List<Cache.Word> ReadLine(Key tag, int wordsInLine)
         {
             throw new NotImplementedException();
         }

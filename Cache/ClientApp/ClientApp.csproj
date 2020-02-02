@@ -61,6 +61,10 @@
       <Project>{0b7f67a9-a533-4e69-afc0-ebe49fd18e07}</Project>
       <Name>Mocks</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SharedLibrary\SharedLibrary.csproj">
+      <Project>{e0445092-a3c2-46a7-83d7-8cac3f67a657}</Project>
+      <Name>SharedLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

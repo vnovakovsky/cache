@@ -7,42 +7,55 @@ using Cache;
 
 namespace Mocks
 {
-    class DatabaseStorageMock<Key, Word> : IStorage<Key>
+    class DatabaseStorageMock<Key, Value> : IStorage<Key>// where W : new() 
     {
-        public Dictionary<Key, Word> database_;
+        public Dictionary<Key, Value> database_;
         public DatabaseStorageMock()
         {
-            database_ = new Dictionary<Key, Word>();
+            database_ = new Dictionary<Key, Value>();
         }
         public byte[] ReadWord(Key key)
         {
-            Word w = database_[key];
-            return Convert(w);
+            Value word = database_[key];
+            return Convert(word);
+        }
+
+        public List<Word> ReadLine(Key tag, int wordsInLine)
+        {
+            List<Word> words = new List<Word>();
+            int iTag = Util.ConvertToInt(tag);
+            for (int i = iTag; i < wordsInLine; ++i)
+            {
+                byte[] storageBytes = ReadWord(tag);
+                Word storageWord = new Word(i, storageBytes, -1);
+                words.Add(storageWord);
+            }
+            return words;
         }
 
         public void WriteWord(Key key, byte[] binWord)
         {
-            Word word = Convert(binWord);
+            Value word = Convert(binWord);
             database_.Add(key, word);
         }
 
-        public static Word Convert(byte[] binWord)
+        public static Value Convert(byte[] binWord)
         {
             string s = Encoding.ASCII.GetString(binWord);
             return Convert(s);
         }
-        public static Word Convert(string word)
+        public static Value Convert(string word)
         {
             TypeConverter converter =
-                TypeDescriptor.GetConverter(typeof(Word));
+                TypeDescriptor.GetConverter(typeof(Value));
 
-            return (Word)converter.ConvertFromString(null,
+            return (Value)converter.ConvertFromString(null,
                 CultureInfo.InvariantCulture, word);
         }
-        public static byte[] Convert(Word word)
+        public static byte[] Convert(Value word)
         {
             TypeConverter converter =
-                TypeDescriptor.GetConverter(typeof(Word));
+                TypeDescriptor.GetConverter(typeof(Value));
 
             string s = (string)converter.ConvertFrom(null,
                 CultureInfo.InvariantCulture, word);

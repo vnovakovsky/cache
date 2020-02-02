@@ -7,13 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static Cache.Util;
+
 namespace Cache
 {
     class Cache <Tag> where Tag : unmanaged
     {
         readonly CacheGeometry cacheGeometry_;
         List<Set<Tag>> sets_;
-        IReplacementStrategy<Tag> replacementStrategy_;
+        //IReplacementStrategy<Tag> replacementStrategy_;
         public Cache(CacheGeometry cacheGeometry)
         {
             cacheGeometry_ = cacheGeometry;
@@ -22,7 +24,8 @@ namespace Cache
             {
                 Sets.Add(new Set<Tag>(CacheGeometry.NumberOflines
                                         , CacheGeometry.WordsInLine
-                                        , CacheGeometry.WordSize));
+                                        , CacheGeometry.WordSize
+                                        , i));
             }
         }
 
@@ -30,18 +33,25 @@ namespace Cache
 
         public CacheGeometry CacheGeometry => cacheGeometry_;
 
-        public void ReadWord(Tag tag)
+        public Word ReadWord(Tag tag)
         {
-
+            int iTag = ConvertToInt(tag);
+            for (int i = 0; i < CacheGeometry.NumberOfWays; ++i)
+            {
+                Word word = sets_[i].FindWord(tag);
+                if (!word.IsEmpty)
+                    return word;
+            }
+            return Word.CreateEmpty(iTag);
         }
         // write-through approach
-        public void SaveLine(Tag tag, Tag[] tags, List<Word> words)
+        public void SaveLine(int setIndex, Tag tag, List<Word> words)
         {
-
+            sets_[setIndex].PutWord(tag, words);
         }
-        public void SetReplacementStrategy(IReplacementStrategy<Tag> replacementStrategy)
-        {
+        //public void SetReplacementStrategy(IReplacementStrategy<Tag> replacementStrategy)
+        //{
 
-        }
+        //}
     }
 }

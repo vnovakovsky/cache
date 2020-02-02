@@ -26,7 +26,7 @@ namespace Cache.ReplacementStrategy
         /// </summary>
         public int SelectVictim(Tag tag)
         {
-            int iTag = (int)System.Convert.ChangeType(tag, typeof(int));
+            int iTag = Util.ConvertToInt(tag);
             int lineInSet = iTag % cacheGeometry_.LinesPerCache;
             long min = 0;
             int setIndex = 0;
@@ -43,7 +43,7 @@ namespace Cache.ReplacementStrategy
 
         public void SetRecentWord(Tag tag, int setIndex)
         {
-            int iTag = (int)System.Convert.ChangeType(tag, typeof(int));
+            int iTag = Util.ConvertToInt(tag);
             int lineInSet = iTag % cacheGeometry_.LinesPerCache;
             registry_[setIndex][lineInSet] = ++counter_;
         }

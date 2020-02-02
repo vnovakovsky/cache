@@ -10,7 +10,7 @@ namespace Tests.Cache
         [TestMethod]
         public void CreateSet()
         {
-            Set<int> set = new Set<int>(4, 2, 16);
+            Set<int> set = new Set<int>(4, 2, 16, 0);
         }
     }
 }

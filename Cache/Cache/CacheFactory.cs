@@ -1,4 +1,5 @@
 ﻿using Cache.ReplacementStrategy;
+using static Cache.Util;
 using System;
 
 namespace Cache
@@ -11,17 +12,17 @@ namespace Cache
                 whether it's possible to convert Tag to int in run-time
             */
             Tag tag = default;
-            int obj2 = (int)System.Convert.ChangeType(tag, typeof(int));
+            int obj2 = ConvertToInt(tag);
 
-            throw new NotImplementedException();
+            CacheController<Tag> cacheController = new CacheController<Tag>(cacheGeometry, storage);
+            return cacheController;
         }
         public static CacheController<Tag> Create(CacheGeometry cacheGeometry, IStorage<Tag> storage
                                                     , IReplacementStrategy<Tag> replacementStrategy)
         {
-            Tag tag = default;
-            int obj2 = (int)System.Convert.ChangeType(tag, typeof(int));
-
-            throw new NotImplementedException();
+            CacheController<Tag> cacheController = Create(cacheGeometry, storage);
+            cacheController.ReplacementStrategy = replacementStrategy;
+            return cacheController;
         }
     }
 }
