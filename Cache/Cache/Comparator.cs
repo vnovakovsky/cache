@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cache
 {
-    class Comparator<Tag>
+    class Comparator<Tag> where Tag : unmanaged
     {
         public Comparator(Set<Tag> set)
         {

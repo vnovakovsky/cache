@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cache.ReplacementStrategy
 {
-    public class MRUStrategy<Tag> : IReplacementStrategy<Tag>
+    public class MRUStrategy<Tag> : IReplacementStrategy<Tag> where Tag : unmanaged
     {
         public Set<Tag> SelectVictim(Tag tag)
         {

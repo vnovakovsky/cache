@@ -1,6 +1,6 @@
 ﻿namespace Cache.ReplacementStrategy
 {
-    public interface IReplacementStrategy<Tag>
+    public interface IReplacementStrategy<Tag> where Tag : unmanaged
     {
         Set<Tag> SelectVictim(Tag tag);
 

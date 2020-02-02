@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cache
 {
-    public class CacheController<Tag>
+    public class CacheController<Tag> where Tag : unmanaged
     {
         public CacheController(IStorage<Tag> storage)
         {
