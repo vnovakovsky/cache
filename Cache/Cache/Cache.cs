@@ -26,8 +26,7 @@ namespace Cache
             }
         }
 
-        //public CacheGeometry CacheGeometry { get => cacheGeometry_; private set => cacheGeometry_ = value; }
-        public List<Set<Tag>> Sets { get => sets_; set => sets_ = value; }
+        public List<Set<Tag>> Sets { get => sets_; private set => sets_ = value; }
 
         public CacheGeometry CacheGeometry => cacheGeometry_;
 
@@ -35,6 +34,7 @@ namespace Cache
         {
 
         }
+        // write-through approach
         public void SaveLine(Tag tag, Tag[] tags, List<Word> words)
         {
 

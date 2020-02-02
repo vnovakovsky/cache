@@ -2,8 +2,8 @@
 {
     public interface IReplacementStrategy<Tag> where Tag : unmanaged
     {
-        Set<Tag> SelectVictim(Tag tag);
+        int SelectVictim(Tag tag);
 
-        void SetRecentWord(Tag tag);
+        void SetRecentWord(Tag tag, int setIndex);
     }
 }

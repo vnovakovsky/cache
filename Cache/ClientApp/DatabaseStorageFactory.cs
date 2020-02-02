@@ -11,7 +11,7 @@ namespace ClientApp
                 whether it's possible to convert Tag to int in run-time
             */
             Tag tag = default;
-            int obj2 = (int)System.Convert.ChangeType(tag, typeof(int));
+            int obj = (int)System.Convert.ChangeType(tag, typeof(int));
 
             return new DatabaseStorageMock<Tag, string>();
         }

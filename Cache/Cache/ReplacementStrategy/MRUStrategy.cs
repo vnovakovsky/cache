@@ -8,12 +8,12 @@ namespace Cache.ReplacementStrategy
 {
     public class MRUStrategy<Tag> : IReplacementStrategy<Tag> where Tag : unmanaged
     {
-        public Set<Tag> SelectVictim(Tag tag)
+        public int SelectVictim(Tag tag)
         {
             throw new NotImplementedException();
         }
 
-        public void SetRecentWord(Tag tag)
+        public void SetRecentWord(Tag tag, int setIndex)
         {
             throw new NotImplementedException();
         }
