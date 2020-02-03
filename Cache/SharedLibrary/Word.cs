@@ -11,15 +11,16 @@ namespace Cache
         byte[] buffer_;
         int tag_;
         int setIndex_;
+        public bool isCached;
         public Word(int tag, byte[] bytes, int setIndex = -1)
         {
             Tag = tag;
             Buffer = bytes;
             SetIndex = setIndex;
         }
-        public int Tag { get => tag_; set => tag_ = value; }
-        public byte[] Buffer { get => buffer_; set => buffer_ = value; } //Todo read only?
-        public int SetIndex { get => setIndex_; private set => setIndex_ = value; }
+        public int Tag { get => tag_; private set => tag_ = value; }
+        public byte[] Buffer { get => buffer_; private set => buffer_ = value; }
+        public int SetIndex { get => setIndex_; set => setIndex_ = value; }
         public bool IsEmpty => Buffer == null;
         public static Word CreateEmpty(int iTag)
         {

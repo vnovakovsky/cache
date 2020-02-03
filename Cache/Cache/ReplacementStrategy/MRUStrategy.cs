@@ -13,7 +13,7 @@ namespace Cache.ReplacementStrategy
             throw new NotImplementedException();
         }
 
-        public void SetRecentWord(Tag tag, int setIndex)
+        public void SetRecentLine(Tag tag, int setIndex)
         {
             throw new NotImplementedException();
         }

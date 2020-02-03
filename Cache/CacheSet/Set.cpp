@@ -48,7 +48,7 @@ int Set::FindLine(Tag tag)
 
 		if (table[candidateLine].isValid == 1)
 		{
-			if (inRange(table[candidateLine].firstTag, table[candidateLine].lastTag, t))
+			if (inRange(table[candidateLine].firstTag, table[candidateLine].lastTag, tag))
 			{
 				return candidateLine;
 			}

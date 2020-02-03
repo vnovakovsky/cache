@@ -8,8 +8,8 @@ namespace cache
 	typedef unsigned char	Byte;
 	typedef int				Tag;
 
-	const unsigned int WORD_SIZE		= 16;
-	const unsigned int WORDS_PER_LINE	= 2;
+	const unsigned int WORD_SIZE		= 8;
+	const unsigned int WORDS_PER_LINE	= 4;
 
 #pragma pack(1)
 	struct WordsMapEntry

@@ -1,9 +1,10 @@
 ﻿using Cache;
 using Mocks;
+using System;
 
 namespace ClientApp
 {
-    static class DatabaseStorageFactory<Tag> where Tag : unmanaged
+    static class DatabaseStorageFactory<Tag> where Tag : unmanaged, IComparable
     {
         public static IStorage<Tag> Create()
         {

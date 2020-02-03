@@ -13,7 +13,7 @@ namespace Cache
         ///   numberOflines_ = 2 ^ linesDegree.
         /// </summary>
         readonly int numberOflines_;
-        readonly int linesPerCache_;
+        readonly int linesPerSet_;
         readonly int wordsInLine_;
         /// <summary>
         ///   word size in bytes.
@@ -27,7 +27,7 @@ namespace Cache
         {
             NumberOfWays = numberOfWays;
             numberOflines_ = (int)Math.Pow(2, linesDegree);
-            linesPerCache_ = numberOflines_ / numberOfWays_;
+            linesPerSet_ = numberOflines_ / numberOfWays_;
             wordsInLine_ = wordsInLine;
             wordSize_ = wordSize;
         }
@@ -35,7 +35,7 @@ namespace Cache
         ///   NumberOflines = 2 ^ linesDegree.
         /// </summary>
         public int NumberOflines => numberOflines_;
-        public int LinesPerCache => linesPerCache_;
+        public int LinesPerSet => linesPerSet_;
         public int WordsInLine => wordsInLine_;
         /// <summary>
         ///   word size in bytes.

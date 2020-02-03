@@ -4,10 +4,11 @@ using System.Text;
 using System.ComponentModel;
 using System.Globalization;
 using Cache;
+using System.Linq;
 
 namespace Mocks
 {
-    class DatabaseStorageMock<Key, Value> : IStorage<Key>// where W : new() 
+    class DatabaseStorageMock<Key, Value> : IStorage<Key> where Key : IComparable// where W : new() 
     {
         public Dictionary<Key, Value> database_;
         public DatabaseStorageMock()
@@ -24,11 +25,18 @@ namespace Mocks
         {
             List<Word> words = new List<Word>();
             int iTag = Util.ConvertToInt(tag);
-            for (int i = iTag; i < wordsInLine; ++i)
+            bool eof = false;
+            for (int i = iTag, n = 0; !eof && n < wordsInLine; ++i)
             {
-                byte[] storageBytes = ReadWord(tag);
-                Word storageWord = new Word(i, storageBytes, -1);
-                words.Add(storageWord);
+                Key currentTag = (Key)System.Convert.ChangeType(i, typeof(Key));
+                eof = EOF(currentTag);
+                byte[] storageBytes = ReadWord(currentTag);
+                if (storageBytes != null)
+                {
+                    Word storageWord = new Word(i, storageBytes, -1);
+                    words.Add(storageWord);
+                    ++n;
+                }
             }
             return words;
         }
@@ -60,6 +68,10 @@ namespace Mocks
             string s = (string)converter.ConvertFrom(null,
                 CultureInfo.InvariantCulture, word);
             return Encoding.ASCII.GetBytes(s);
+        }
+        public bool EOF(Key key)
+        {
+            return 0 == key.CompareTo(database_.Keys.Max());
         }
     }
 }

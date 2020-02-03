@@ -22,7 +22,7 @@ namespace Cache
             Sets = new List<Set<Tag>>();
             for(int i = 0; i < CacheGeometry.NumberOfWays; ++i)
             {
-                Sets.Add(new Set<Tag>(CacheGeometry.NumberOflines
+                Sets.Add(new Set<Tag>(CacheGeometry.LinesPerSet
                                         , CacheGeometry.WordsInLine
                                         , CacheGeometry.WordSize
                                         , i));

@@ -21,15 +21,21 @@ namespace Cache
         public Word ReadWord(Tag tag)
         {
             Word word = cache_.ReadWord(tag);
-            if(word.IsEmpty)
+            word.isCached = true;
+            if (word.IsEmpty)
             {
                 // read miss
-                //word.Buffer = storage_.ReadWord(tag);
-                //WriteWord(tag, word);
                 List<Word> words = storage_.ReadLine(tag, cache_.CacheGeometry.WordsInLine);
-                int setIndex = ReplacementStrategy.SelectVictim(tag);
-                cache_.SaveLine(setIndex, tag, words);
+                if (words.Count != 0)
+                {
+                    int setIndex = ReplacementStrategy.SelectVictim(tag);
+                    cache_.SaveLine(setIndex, tag, words);
+                    word = words[0];
+                    word.SetIndex = setIndex;
+                    word.isCached = false;
+                }
             }
+            ReplacementStrategy.SetRecentLine(tag, word.SetIndex);
             return word;
         }
         public void WriteWord(Tag tag, Word word)

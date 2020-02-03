@@ -17,7 +17,7 @@ namespace Cache.ReplacementStrategy
             registry_ = new List<long[]>();
             for(int i = 0; i < cacheGeometry_.NumberOfWays; ++i)
             {
-                long[] arr = new long[cacheGeometry.LinesPerCache];
+                long[] arr = new long[cacheGeometry.LinesPerSet];
                 registry_.Add(arr);
             }
         }
@@ -27,8 +27,8 @@ namespace Cache.ReplacementStrategy
         public int SelectVictim(Tag tag)
         {
             int iTag = Util.ConvertToInt(tag);
-            int lineInSet = iTag % cacheGeometry_.LinesPerCache;
-            long min = 0;
+            int lineInSet = iTag % cacheGeometry_.LinesPerSet;
+            long min = registry_[0][lineInSet];
             int setIndex = 0;
             for (int s = 0; s < registry_.Count; ++s)
             {
@@ -41,10 +41,10 @@ namespace Cache.ReplacementStrategy
             return setIndex;
         }
 
-        public void SetRecentWord(Tag tag, int setIndex)
+        public void SetRecentLine(Tag tag, int setIndex)
         {
             int iTag = Util.ConvertToInt(tag);
-            int lineInSet = iTag % cacheGeometry_.LinesPerCache;
+            int lineInSet = iTag % cacheGeometry_.LinesPerSet;
             registry_[setIndex][lineInSet] = ++counter_;
         }
     }

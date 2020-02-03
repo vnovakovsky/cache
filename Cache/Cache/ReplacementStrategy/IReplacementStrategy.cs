@@ -4,6 +4,6 @@
     {
         int SelectVictim(Tag tag);
 
-        void SetRecentWord(Tag tag, int setIndex);
+        void SetRecentLine(Tag tag, int setIndex);
     }
 }
