@@ -53,7 +53,7 @@ namespace Tests.Cache.CacheControllerTest
                 Word word = cacheController.ReadWord(i);
                 Word wordHit = cacheController.ReadWord(i); // read hit second time for the same word
                 Assert.AreEqual(word.Tag, wordHit.Tag);
-            } while (!databaseStorage_.EOF(i++));
+            } while (!databaseStorage_.EOF(++i));
 
         }
         [TestMethod]
@@ -97,7 +97,7 @@ namespace Tests.Cache.CacheControllerTest
                 {
                     Assert.AreEqual(word.isCached, true); // hit
                 }
-            } while (!databaseStorage_.EOF(i++));
+            } while (!databaseStorage_.EOF(++i));
         }
         [TestMethod]
         public void ReadWordTest5_FirstRepresentativeZero()

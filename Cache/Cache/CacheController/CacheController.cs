@@ -32,6 +32,10 @@ namespace Cache.CacheController
                     word.SetIndex = setIndex;
                     word.isCached = false;
                 }
+                else
+                {
+                    return Word.CreateEmpty(Util.ConvertToInt(tag));
+                }
             }
             ReplacementStrategy.SetRecentLine(tag, word.SetIndex);
             return word;

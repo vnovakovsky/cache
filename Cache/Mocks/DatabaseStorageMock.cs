@@ -17,19 +17,24 @@ namespace Mocks
         }
         public byte[] ReadWord(Key key)
         {
-            Value word = database_[key];
-            return Convert(word);
+            Value wordOut;
+            if (database_.TryGetValue(key, out wordOut))
+            {
+                return Convert(wordOut);
+            }
+
+            return null;
         }
 
         public List<Word> ReadLine(Key tag, int wordsInLine)
         {
             List<Word> words = new List<Word>();
             int iTag = Util.ConvertToInt(tag);
-            bool eof = false;
-            for (int i = iTag, n = 0; !eof && n < wordsInLine; ++i)
+            for (int i = iTag, n = 0; n < wordsInLine; ++i)
             {
                 Key currentTag = (Key)System.Convert.ChangeType(i, typeof(Key));
-                eof = EOF(currentTag);
+                if (EOF(currentTag))
+                    break;
                 byte[] storageBytes = ReadWord(currentTag);
                 if (storageBytes != null)
                 {
@@ -44,7 +49,7 @@ namespace Mocks
         public void WriteWord(Key key, byte[] binWord)
         {
             Value word = Convert(binWord);
-            database_.Add(key, word);
+            database_[key] = word;
         }
 
         public static Value Convert(byte[] binWord)
@@ -71,7 +76,12 @@ namespace Mocks
         }
         public bool EOF(Key key)
         {
-            return 0 == key.CompareTo(database_.Keys.Max());
+            int result = key.CompareTo(database_.Keys.Max());
+            if (result == 1)
+                return true;
+            else
+                return false;
+            //return 0 == key.CompareTo(database_.Keys.Max());
         }
         public Key MaxKey()
         {
