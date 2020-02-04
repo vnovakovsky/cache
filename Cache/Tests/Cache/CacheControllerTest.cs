@@ -101,19 +101,17 @@ namespace Tests.Cache
         public void ReadWordTest5_FirstRepresentativeZero()
         {
             CacheController<int> cacheController = CreateController();
-            int linesPerSet = (int)Math.Pow(2, kLinesDegree) / kNumberOfWays; ;
+            int linesPerSet_Mod = (int)Math.Pow(2, kLinesDegree) / kNumberOfWays; ;
 
             // iterate throug all members of class [0] = Z linesPerSet_Mod = Z mod linesPerSet_Mod
-            int representative = 0;
-            int tag = 0;
-            for (int c = 0; tag < databaseStorage_.MaxKey(); ++c)
+            // rep = representative
+            int rep = 0;
+            for (int c = 0, tag = rep + linesPerSet_Mod * c;
+                    tag < databaseStorage_.MaxKey();
+                    ++c, tag = rep + linesPerSet_Mod * c)
             {
-                tag = representative + linesPerSet * c;
-                if (tag >= databaseStorage_.MaxKey())
-                    break;
                 Word word = cacheController.ReadWord(tag);
                 Assert.AreEqual(word.SetIndex, c % kNumberOfWays);
-                
             }
         }
         [TestMethod]
@@ -128,18 +126,11 @@ namespace Tests.Cache
             {
                 // iterate throug all members of class [a] = Z linesPerSet_Mod = Z mod linesPerSet_Mod
                 // [a] = {x: z mod linesPerSet_Mod == a, z E Z}
-                //int tag = 0;
-                //int tag = representative + linesPerSet_Mod * 0;
-                //for (int c = 0; tag < databaseStorage_.MaxKey(); ++c)
                 for (int c = 0, tag = rep + linesPerSet_Mod * c;
                     tag < databaseStorage_.MaxKey();
                     ++c, tag = rep + linesPerSet_Mod * c)
                 {
-                    //tag = representative + linesPerSet_Mod * c;
-                    //if (tag >= databaseStorage_.MaxKey())
-                    //    break;
                     Word word = cacheController.ReadWord(tag);
-                 
                     Assert.AreEqual(word.SetIndex, c % kNumberOfWays);
                 }
             }
