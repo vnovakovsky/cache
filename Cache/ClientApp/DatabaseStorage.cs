@@ -26,5 +26,10 @@ namespace ClientApp
         {
             throw new NotImplementedException();
         }
+
+        public bool EOF(Key key)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

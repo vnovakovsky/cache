@@ -11,15 +11,19 @@ namespace Tests.Cache
     public class CacheControllerTest
     {
         DatabaseStorageMock<int, string> databaseStorage_ = new DatabaseStorageMock<int, string>();
+        const int kNumberOfWays = 4;
+        const int kLinesDegree = 4;
+        const int kWordsInLine = 4;
+        const int kWordSize = 4;
 
         CacheController<int> CreateController()
         {
             databaseStorage_.database_.Clear();
             FillDatabaseTest();
-            CacheGeometry cacheGeometry = new CacheGeometry(numberOfWays: 4
-                                                            , linesDegree: 5
-                                                            , wordsInLine: 4
-                                                            , wordSize: 8);
+            CacheGeometry cacheGeometry = new CacheGeometry(numberOfWays: kNumberOfWays
+                                                            , linesDegree: kLinesDegree
+                                                            , wordsInLine: kWordsInLine
+                                                            , wordSize: kWordSize);
             IReplacementStrategy<int> replacementStrategy = new LRUStrategy<int>(cacheGeometry);
             CacheController<int> cacheController =
                 CacheFactory<int>.Create(cacheGeometry, databaseStorage_, replacementStrategy);
@@ -94,18 +98,50 @@ namespace Tests.Cache
             } while (!databaseStorage_.EOF(i++));
         }
         [TestMethod]
-        public void ReadWordTest5()
+        public void ReadWordTest5_FirstRepresentativeZero()
         {
             CacheController<int> cacheController = CreateController();
-            const int linesPerSet = 8;
+            int linesPerSet = (int)Math.Pow(2, kLinesDegree) / kNumberOfWays; ;
 
-            int offset = 0;
+            // iterate throug all members of class [0] = Z linesPerSet_Mod = Z mod linesPerSet_Mod
+            int representative = 0;
             int tag = 0;
-            for (int c = 1; tag < 256; ++c)
+            for (int c = 0; tag < databaseStorage_.MaxKey(); ++c)
             {
+                tag = representative + linesPerSet * c;
+                if (tag >= databaseStorage_.MaxKey())
+                    break;
                 Word word = cacheController.ReadWord(tag);
-                Assert.AreEqual(word.SetIndex, (c-1) % 4);
-                tag = offset + linesPerSet * c;
+                Assert.AreEqual(word.SetIndex, c % kNumberOfWays);
+                
+            }
+        }
+        [TestMethod]
+        public void ReadWordTest6_AllRepresentatives()
+        {
+            CacheController<int> cacheController = CreateController();
+            int linesPerSet_Mod = (int)Math.Pow(2, kLinesDegree) / kNumberOfWays;
+
+            // iterate throug all representatives of ring (Z mod linesPerSet_Mod): [0], [1], ..., [linesPerSet_Mod - 1]
+            // rep = representative
+            for (int rep = 0; rep < linesPerSet_Mod; ++rep)
+            {
+                // iterate throug all members of class [a] = Z linesPerSet_Mod = Z mod linesPerSet_Mod
+                // [a] = {x: z mod linesPerSet_Mod == a, z E Z}
+                //int tag = 0;
+                //int tag = representative + linesPerSet_Mod * 0;
+                //for (int c = 0; tag < databaseStorage_.MaxKey(); ++c)
+                for (int c = 0, tag = rep + linesPerSet_Mod * c;
+                    tag < databaseStorage_.MaxKey();
+                    ++c, tag = rep + linesPerSet_Mod * c)
+                {
+                    //tag = representative + linesPerSet_Mod * c;
+                    //if (tag >= databaseStorage_.MaxKey())
+                    //    break;
+                    Word word = cacheController.ReadWord(tag);
+                 
+                    Assert.AreEqual(word.SetIndex, c % kNumberOfWays);
+                }
             }
         }
         private void ReadWord(CacheController<int> cacheController, int tag)

@@ -11,5 +11,6 @@ namespace Cache
         Byte[] ReadWord(Key key);
         void WriteWord(Key key, Byte[] array);
         List<Word> ReadLine(Key tag, int wordsInLine);
+        bool EOF(Key key);
     }
 }

@@ -73,5 +73,9 @@ namespace Mocks
         {
             return 0 == key.CompareTo(database_.Keys.Max());
         }
+        public Key MaxKey()
+        {
+            return database_.Keys.Max();
+        }
     }
 }
