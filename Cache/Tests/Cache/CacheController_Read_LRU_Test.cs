@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using Cache;
+using Cache.CacheController;
 using Cache.ReplacementStrategy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mocks;
@@ -16,7 +17,7 @@ namespace Tests.Cache.CacheControllerTest
         const int kWordsInLine = 4;
         const int kWordSize = 4;
 
-        CacheController<int> CreateController()
+        ICacheController<int> CreateController()
         {
             databaseStorage_.database_.Clear();
             FillDatabaseTest();
@@ -25,7 +26,7 @@ namespace Tests.Cache.CacheControllerTest
                                                             , wordsInLine: kWordsInLine
                                                             , wordSize: kWordSize);
             IReplacementStrategy<int> replacementStrategy = new LRUStrategy<int>(cacheGeometry);
-            CacheController<int> cacheController =
+            ICacheController<int> cacheController =
                 CacheFactory<int>.Create(cacheGeometry, databaseStorage_, replacementStrategy);
 
             return cacheController;
@@ -33,7 +34,7 @@ namespace Tests.Cache.CacheControllerTest
         [TestMethod]
         public void ReadWordTest1_SelectedTags()
         {
-            CacheController<int> cacheController = CreateController();
+            ICacheController<int> cacheController = CreateController();
             Word word42     = cacheController.ReadWord(42);
             Word word42Hit  = cacheController.ReadWord(42); // read hit
             Assert.AreEqual(word42.Tag, word42Hit.Tag);
@@ -45,7 +46,7 @@ namespace Tests.Cache.CacheControllerTest
         [TestMethod]
         public void ReadWordTest2_Sequential()
         {
-            CacheController<int> cacheController = CreateController();
+            ICacheController<int> cacheController = CreateController();
             int i = 0;
             do
             {
@@ -58,7 +59,7 @@ namespace Tests.Cache.CacheControllerTest
         [TestMethod]
         public void ReadWordTest3_Sequential()
         {
-            CacheController<int> cacheController = CreateController();
+            ICacheController<int> cacheController = CreateController();
             const int wordsInLine = 4;
             // if line consists from n words then word0...wordn-1 will be not chached when word0 requested first time
             // but subsequent reading of word1..wordn-1 will hit
@@ -79,7 +80,7 @@ namespace Tests.Cache.CacheControllerTest
         [TestMethod]
         public void ReadWordTest4_Sequential()
         {
-            CacheController<int> cacheController = CreateController();
+            ICacheController<int> cacheController = CreateController();
             const int wordsInLine = 4;
 
             int i = 0;
@@ -101,7 +102,7 @@ namespace Tests.Cache.CacheControllerTest
         [TestMethod]
         public void ReadWordTest5_FirstRepresentativeZero()
         {
-            CacheController<int> cacheController = CreateController();
+            ICacheController<int> cacheController = CreateController();
             int linesPerSet_Mod = (int)Math.Pow(2, kLinesDegree) / kNumberOfWays; ;
 
             // iterate throug all members of class [0] = Z linesPerSet_Mod = Z mod linesPerSet_Mod
@@ -118,7 +119,7 @@ namespace Tests.Cache.CacheControllerTest
         [TestMethod]
         public void ReadWordTest6_AllRepresentatives()
         {
-            CacheController<int> cacheController = CreateController();
+            ICacheController<int> cacheController = CreateController();
             int linesPerSet_Mod = (int)Math.Pow(2, kLinesDegree) / kNumberOfWays;
 
             // iterate throug all representatives of ring (Z mod linesPerSet_Mod): [0], [1], ..., [linesPerSet_Mod - 1]

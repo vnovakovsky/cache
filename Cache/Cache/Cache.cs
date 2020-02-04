@@ -11,7 +11,7 @@ using static Cache.Util;
 
 namespace Cache
 {
-    class Cache <Tag> where Tag : unmanaged
+    public class Cache <Tag> where Tag : unmanaged
     {
         readonly CacheGeometry cacheGeometry_;
         List<Set<Tag>> sets_;

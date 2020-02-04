@@ -47,7 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CacheController.cs" />
+    <Compile Include="CacheController\AllocateCacheController.cs" />
+    <Compile Include="CacheController\AroundCacheController.cs" />
+    <Compile Include="CacheController\CacheController.cs" />
+    <Compile Include="CacheController\ICacheController.cs" />
     <Compile Include="CacheFactory.cs" />
     <Compile Include="CacheGeometry.cs" />
     <Compile Include="CacheLib.cs" />
