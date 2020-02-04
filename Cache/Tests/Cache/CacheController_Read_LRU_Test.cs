@@ -5,10 +5,10 @@ using Cache.ReplacementStrategy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mocks;
 
-namespace Tests.Cache
+namespace Tests.Cache.CacheControllerTest
 {
     [TestClass]
-    public class CacheControllerTest
+    public class CacheController_Read_LRU_Test
     {
         DatabaseStorageMock<int, string> databaseStorage_ = new DatabaseStorageMock<int, string>();
         const int kNumberOfWays = 4;
@@ -31,7 +31,7 @@ namespace Tests.Cache
             return cacheController;
         }
         [TestMethod]
-        public void ReadWordTest1()
+        public void ReadWordTest1_SelectedTags()
         {
             CacheController<int> cacheController = CreateController();
             Word word42     = cacheController.ReadWord(42);
@@ -43,40 +43,41 @@ namespace Tests.Cache
             Assert.AreEqual(word.Tag, wordHit.Tag);
         }
         [TestMethod]
-        public void ReadWordTest2()
+        public void ReadWordTest2_Sequential()
         {
             CacheController<int> cacheController = CreateController();
             int i = 0;
             do
             {
                 Word word = cacheController.ReadWord(i);
-                Word wordHit = cacheController.ReadWord(i); // read hit
+                Word wordHit = cacheController.ReadWord(i); // read hit second time for the same word
                 Assert.AreEqual(word.Tag, wordHit.Tag);
             } while (!databaseStorage_.EOF(i++));
 
         }
         [TestMethod]
-        public void ReadWordTest3()
+        public void ReadWordTest3_Sequential()
         {
             CacheController<int> cacheController = CreateController();
             const int wordsInLine = 4;
-
+            // if line consists from n words then word0...wordn-1 will be not chached when word0 requested first time
+            // but subsequent reading of word1..wordn-1 will hit
             int i = 0;
             do
             {
                 Word word = cacheController.ReadWord(i);
                 if (i % wordsInLine == 0)
                 {
-                    Assert.AreEqual(word.isCached, false);
+                    Assert.AreEqual(word.isCached, false); // miss for word0
                 }
                 else
                 {
-                    Assert.AreEqual(word.isCached, true);
+                    Assert.AreEqual(word.isCached, true); // hit for word1..wordn-1
                 }
             } while (!databaseStorage_.EOF(i++));
         }
         [TestMethod]
-        public void ReadWordTest4()
+        public void ReadWordTest4_Sequential()
         {
             CacheController<int> cacheController = CreateController();
             const int wordsInLine = 4;
@@ -87,13 +88,13 @@ namespace Tests.Cache
                 Word word = cacheController.ReadWord(i);
                 if (i % wordsInLine == 0)
                 {
-                    Assert.AreEqual(word.isCached, false);
+                    Assert.AreEqual(word.isCached, false); // miss
                     word = cacheController.ReadWord(i);
-                    Assert.AreEqual(word.isCached, true);
+                    Assert.AreEqual(word.isCached, true); // hit second time
                 }
                 else
                 {
-                    Assert.AreEqual(word.isCached, true);
+                    Assert.AreEqual(word.isCached, true); // hit
                 }
             } while (!databaseStorage_.EOF(i++));
         }

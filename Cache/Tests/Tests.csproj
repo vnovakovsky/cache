@@ -55,7 +55,7 @@
     <Compile Include="Cache\CacheLibTest.cs" />
     <Compile Include="Cache\StorageTest.cs" />
     <Compile Include="Cache\SetTest.cs" />
-    <Compile Include="Cache\CacheControllerTest.cs" />
+    <Compile Include="Cache\CacheController_Read_LRU_Test.cs" />
     <Compile Include="ClientApp\DatabaseStorageFactoryTest.cs" />
     <Compile Include="ClientLib\DatabaseStorageMockTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
