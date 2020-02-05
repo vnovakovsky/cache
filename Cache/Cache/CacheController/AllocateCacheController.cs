@@ -38,7 +38,7 @@ namespace Cache.CacheController
 
             List<Word> words = storage_.ReadLine(tag, cache_.CacheGeometry.WordsInLine);
             Word cachedWord = cache_.ReadWord(tag);
-            int setIndex = -1;
+            int setIndex = Word.NULL;
             if (!cachedWord.IsEmpty)
             {
                 // hit

@@ -8,11 +8,13 @@ namespace Cache
 {
     public class Word
     {
+        public const int NULL = -1;
+        public const bool kInvalidate = true;
         byte[] buffer_;
         int tag_;
         int setIndex_;
         public bool isCached;
-        public Word(int tag, byte[] bytes, int setIndex = -1)
+        public Word(int tag, byte[] bytes, int setIndex = Word.NULL)
         {
             Tag = tag;
             Buffer = bytes;
@@ -24,7 +26,7 @@ namespace Cache
         public bool IsEmpty => Buffer == null;
         public static Word CreateEmpty(int iTag)
         {
-            return new Word(iTag, null, -1);
+            return new Word(iTag, null, Word.NULL);
         }
     }
 }

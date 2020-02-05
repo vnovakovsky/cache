@@ -13,7 +13,7 @@ Set::Set(int numberOfLines)
 {
 	for (int i = 0; i < numberOfLines; ++i)
 	{
-		table[i].isValid = -1;
+		table[i].isValid = kFalse;
 	}
 }
 
@@ -31,7 +31,7 @@ void Set::PutWord(Tag firstTag, Tag currentTag, int index, void* data, int lengt
 	
 	if (isFinal)
 	{
-		table[targetLine].isValid = 1;
+		table[targetLine].isValid = kTrue;
 		table[targetLine].firstTag = firstTag;
 		table[targetLine].lastTag = currentTag;
 	}
@@ -39,26 +39,26 @@ void Set::PutWord(Tag firstTag, Tag currentTag, int index, void* data, int lengt
 
 int Set::FindLine(Tag tag, bool invalidate)
 {
-	int outlookDistance = WORDS_PER_LINE * 2;
-	Tag firstTag = (tag - outlookDistance > 0) ? tag - outlookDistance : 0;
+	int backTraceDistance = WORDS_PER_LINE * 2;
+	Tag firstTag = (tag - backTraceDistance > 0) ? tag - backTraceDistance : 0;
 	for (int t = firstTag; t <= tag; ++t)
 	{
 		int candidateLine = t % nLines_;
 
-		if (table[candidateLine].isValid == 1)
+		if (table[candidateLine].isValid == kTrue)
 		{
 			if (inRange(table[candidateLine].firstTag, table[candidateLine].lastTag, tag))
 			{
 				if (invalidate)
 				{
-					table[candidateLine].isValid = -1;
-					return -1;
+					table[candidateLine].isValid = kFalse;
+					return kFalse;
 				}
 				return candidateLine;
 			}
 		}
 	}
-	return -1; // not found
+	return kFalse; // not found
 }
 
 void* Set::FindWord(Tag tag, int line, int* length)

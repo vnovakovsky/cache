@@ -39,6 +39,8 @@ namespace cache
 		const int nLines_;
 		std::vector<Line>	table;
 	public:
+		const int kTrue = 1;
+		const int kFalse = -1;
 		Set(int numberOfLines);
 		void PutWord(Tag firstTag, Tag currentTag, int index, void* data, int length, bool isFinal);
 		int FindLine(Tag tag, bool invalidate = false);
