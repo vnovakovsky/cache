@@ -36,13 +36,12 @@ namespace cache
 	class Set
 	{
 	private:
-		const size_t bufSize_;
 		const int nLines_;
 		std::vector<Line>	table;
 	public:
 		Set(int numberOfLines);
 		void PutWord(Tag firstTag, Tag currentTag, int index, void* data, int length, bool isFinal);
-		int FindLine(Tag tag);
+		int FindLine(Tag tag, bool invalidate = false);
 		void* FindWord(Tag tag, int line, int* length);
 		bool inRange(Tag low, Tag high, Tag x)
 		{

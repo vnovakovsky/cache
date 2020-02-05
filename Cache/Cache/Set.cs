@@ -27,10 +27,10 @@ namespace Cache
             SetProxy.PutWord(iTag, data);
         }
 
-        public Word FindWord(Tag tag)
+        public Word FindWord(Tag tag, bool invalidate = false)
         {
             int iTag = ConvertToInt(tag);
-            byte[] bytes = SetProxy.FindWord(iTag);
+            byte[] bytes = SetProxy.FindWord(iTag, invalidate);
             Word word = new Word(iTag, bytes, id_);
             return word;
         }

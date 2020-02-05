@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Cache;
 using Cache.CacheController;
@@ -79,6 +80,7 @@ namespace Tests.Cache.CacheControllerTest
                 cacheController.WriteWord(i, word);
                 Word wordBack = cacheController.ReadWord(i);
                 Assert.AreEqual(word.Tag, wordBack.Tag);
+                Assert.IsTrue(word.Buffer.SequenceEqual(wordBack.Buffer));
 
                 // update -> read
                 s = string.Format("2nd{0:000}", i);

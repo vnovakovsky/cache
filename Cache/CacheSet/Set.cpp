@@ -8,8 +8,7 @@ namespace cache
 {
 
 Set::Set(int numberOfLines)
-	: bufSize_(numberOfLines * sizeof(Line))
-	, nLines_(numberOfLines)
+	: nLines_(numberOfLines)
 	, table(numberOfLines)
 {
 	for (int i = 0; i < numberOfLines; ++i)
@@ -38,7 +37,7 @@ void Set::PutWord(Tag firstTag, Tag currentTag, int index, void* data, int lengt
 	}
 }
 
-int Set::FindLine(Tag tag)
+int Set::FindLine(Tag tag, bool invalidate)
 {
 	int outlookDistance = WORDS_PER_LINE * 2;
 	Tag firstTag = (tag - outlookDistance > 0) ? tag - outlookDistance : 0;
@@ -50,6 +49,11 @@ int Set::FindLine(Tag tag)
 		{
 			if (inRange(table[candidateLine].firstTag, table[candidateLine].lastTag, tag))
 			{
+				if (invalidate)
+				{
+					table[candidateLine].isValid = -1;
+					return -1;
+				}
 				return candidateLine;
 			}
 		}

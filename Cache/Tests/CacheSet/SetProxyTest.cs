@@ -89,14 +89,14 @@ namespace Tests.CacheSet
 
             //byte[] bytes = new byte[16];
             byte[] bytes42 = null;
-            bytes42 = setProxy.FindWord(42);
+            bytes42 = setProxy.FindWord(42, false);
             if (bytes42 != null)
             {
                 string string42 = Encoding.ASCII.GetString(bytes42);
             }
 
             byte[] bytes43 = null;
-            bytes43 = setProxy.FindWord(43);
+            bytes43 = setProxy.FindWord(43, false);
             if (bytes43 != null)
             {
                 string string43 = Encoding.ASCII.GetString(bytes43);

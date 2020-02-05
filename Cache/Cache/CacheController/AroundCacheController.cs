@@ -29,8 +29,8 @@ namespace Cache.CacheController
         */
         public override void WriteWord(Tag tag, Word word)
         {
-                        
-            Word cachedWord = cache_.ReadWord(tag);
+            storage_.WriteWord(tag, word.Buffer); // shared for miss or hit
+            Word cachedWord = cache_.ReadWord(tag, true);
             //int setIndex = -1;
             if (!cachedWord.IsEmpty)
             {
@@ -39,11 +39,10 @@ namespace Cache.CacheController
                 int setIndex = cachedWord.SetIndex;
                 cache_.SaveLine(setIndex, tag, words);
             }
-            // shared for miss or hit
+            
             //List<Word> words = storage_.ReadLine(tag, cache_.CacheGeometry.WordsInLine);
             //setIndex = ReplacementStrategy.SelectVictim(tag);
             //cache_.SaveLine(setIndex, tag, words);
-            storage_.WriteWord(tag, word.Buffer);
         }
     }
 }

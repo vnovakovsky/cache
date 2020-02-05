@@ -33,12 +33,12 @@ namespace Cache
 
         public CacheGeometry CacheGeometry => cacheGeometry_;
 
-        public Word ReadWord(Tag tag)
+        public Word ReadWord(Tag tag, bool invalidate = false)
         {
             int iTag = ConvertToInt(tag);
             for (int i = 0; i < CacheGeometry.NumberOfWays; ++i)
             {
-                Word word = sets_[i].FindWord(tag);
+                Word word = sets_[i].FindWord(tag, invalidate);
                 if (!word.IsEmpty)
                     return word;
             }
