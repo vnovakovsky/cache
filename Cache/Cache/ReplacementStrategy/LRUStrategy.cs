@@ -1,51 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace Cache.ReplacementStrategy
 {
-    public class LRUStrategy<Tag> : IReplacementStrategy<Tag> where Tag : unmanaged
+    public class LRUStrategy<Tag> : RecentlyUsedStrategy<Tag> where Tag : unmanaged
     {
-        readonly CacheGeometry cacheGeometry_;
-        List<long[]> registry_;
-        private long counter_ = 0;
         public LRUStrategy(CacheGeometry cacheGeometry)
+            : base(cacheGeometry, Functor.Less<long>())
         {
-            cacheGeometry_ = cacheGeometry;
-            registry_ = new List<long[]>();
-            for(int i = 0; i < cacheGeometry_.NumberOfWays; ++i)
-            {
-                long[] arr = new long[cacheGeometry.LinesPerSet];
-                registry_.Add(arr);
-            }
-        }
-        /// <summary>
-        ///   Returns set index with least recently used line.
-        /// </summary>
-        public int SelectVictim(Tag tag)
-        {
-            int iTag = Util.ConvertToInt(tag);
-            int lineInSet = iTag % cacheGeometry_.LinesPerSet;
-            long min = registry_[0][lineInSet];
-            int setIndex = 0;
-            for (int s = 0; s < registry_.Count; ++s)
-            {
-                if(registry_[s][lineInSet] < min)
-                {
-                    min = registry_[s][lineInSet];
-                    setIndex = s;
-                }
-            }
-            return setIndex;
-        }
-
-        public void SetRecentLine(Tag tag, int setIndex)
-        {
-            int iTag = Util.ConvertToInt(tag);
-            int lineInSet = iTag % cacheGeometry_.LinesPerSet;
-            registry_[setIndex][lineInSet] = ++counter_;
         }
     }
 }

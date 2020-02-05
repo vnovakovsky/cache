@@ -61,6 +61,7 @@
     <Compile Include="Cache.cs" />
     <Compile Include="ReplacementStrategy\LRUStrategy.cs" />
     <Compile Include="ReplacementStrategy\MRUStrategy.cs" />
+    <Compile Include="ReplacementStrategy\RecentlyUsedStrategy.cs" />
     <Compile Include="Set.cs" />
   </ItemGroup>
   <ItemGroup>
