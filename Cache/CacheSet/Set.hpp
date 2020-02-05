@@ -41,6 +41,7 @@ namespace cache
 	public:
 		const int kTrue = 1;
 		const int kFalse = -1;
+		const static int kNotFound = -1;
 		Set(int numberOfLines);
 		void PutWord(Tag firstTag, Tag currentTag, int index, void* data, int length, bool isFinal);
 		int FindLine(Tag tag, bool invalidate = false);

@@ -58,7 +58,7 @@ int Set::FindLine(Tag tag, bool invalidate)
 			}
 		}
 	}
-	return kFalse; // not found
+	return kNotFound; // not found
 }
 
 void* Set::FindWord(Tag tag, int line, int* length)

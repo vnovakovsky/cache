@@ -36,20 +36,27 @@ namespace Cache.CacheController
             // for hit - in the same set as old word occupies (but the whole new line), 
             // for miss - in any set returned by replacement algorithm
 
+            storage_.WriteWord(tag, word.Buffer); // if can add new record then words is not empty
+            
             List<Word> words = storage_.ReadLine(tag, cache_.CacheGeometry.WordsInLine);
-            Word cachedWord = cache_.ReadWord(tag);
-            int setIndex = Word.NULL;
-            if (!cachedWord.IsEmpty)
+            if (words.Count != 0)
             {
-                // hit
-                setIndex = cachedWord.SetIndex;
-            }
-            {
-                //miss
-                setIndex = ReplacementStrategy.SelectVictim(tag);
-            }
-            cache_.SaveLine(setIndex, tag, words);
-            storage_.WriteWord(tag, word.Buffer);
+                int setIndex = 0;
+                bool isFirstInLine = Util.ConvertToInt(tag) == words[0].Tag;
+                bool invalidate = !isFirstInLine;
+                Word cachedWord = cache_.ReadWord(tag, invalidate);
+                if (isFirstInLine  && !cachedWord.IsEmpty)
+                {
+                    // hit - rewrite old line in the same place
+                    setIndex = cachedWord.SetIndex;
+                }
+                {
+                    //miss or passed tag is not first in line and therefore tag maps not in old line
+                    // ans replacement algorithm select new set index
+                    setIndex = ReplacementStrategy.SelectVictim(tag);
+                }
+                cache_.SaveLine(setIndex, tag, words);
+            }            
         }
     }
 }

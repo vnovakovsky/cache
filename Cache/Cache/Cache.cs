@@ -49,9 +49,5 @@ namespace Cache
         {
             sets_[setIndex].PutWord(tag, words);
         }
-        //public void SetReplacementStrategy(IReplacementStrategy<Tag> replacementStrategy)
-        //{
-
-        //}
     }
 }
