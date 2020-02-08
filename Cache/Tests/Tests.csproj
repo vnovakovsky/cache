@@ -58,6 +58,7 @@
     <Compile Include="Cache\AroundCacheController_Read_LRU_Test.cs" />
     <Compile Include="Cache\AroundCacheController_Write_LRU_Test.cs" />
     <Compile Include="ClientApp\DatabaseStorageFactoryTest.cs" />
+    <Compile Include="ClientApp\DatabaseStorageTest.cs" />
     <Compile Include="ClientLib\DatabaseStorageMockTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

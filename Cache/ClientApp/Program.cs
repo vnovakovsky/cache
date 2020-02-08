@@ -1,7 +1,10 @@
-﻿using Mocks;
+﻿using Cache;
+using Mocks;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -13,13 +16,7 @@ namespace ClientApp
     {
         static void Main(string[] args)
         {
-            DatabaseStorageMock<int, string> databaseStorage = new DatabaseStorageMock<int, string>();
-
-            databaseStorage.WriteWord(1, Convert("a"));
-            databaseStorage.WriteWord(2, Convert("b"));
-            databaseStorage.WriteWord(3, Convert("c"));
-            databaseStorage.WriteWord(4, Convert("d"));
-            databaseStorage.WriteWord(5, Convert("e"));
+            
         }
         static byte[] Convert(string inValue)
         {

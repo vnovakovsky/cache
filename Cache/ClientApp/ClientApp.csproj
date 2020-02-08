@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="DatabaseStorage.cs" />
     <Compile Include="DatabaseStorageFactory.cs" />
+    <Compile Include="Employee.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
