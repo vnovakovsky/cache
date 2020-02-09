@@ -15,7 +15,7 @@ namespace Tests.Cache.CacheControllerTest
         const int kNumberOfWays = 4;
         const int kLinesDegree = 4;
         const int kWordsInLine = 4;
-        const int kWordSize = 4;
+        const int kWordSize = 8;
 
         ICacheController<int> CreateController()
         {

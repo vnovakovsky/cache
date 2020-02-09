@@ -9,10 +9,15 @@ namespace cache
 
 	Set::Set(int numberOfLines, int wordsInLine, int wordSize)
 		: nLines_(numberOfLines)
+		, wordsInLine_(wordsInLine)
+		, kBytesInLine(sizeof(LinePrefix) + sizeof(WordsMapEntry) * wordsInLine + wordSize * wordsInLine)
+		, buffer_(new Byte[numberOfLines * kBytesInLine])
 		, table(numberOfLines)
 	{
 		for (int i = 0; i < numberOfLines; ++i)
 		{
+			Line line(wordsInLine, wordSize, buffer_ + i * kBytesInLine);
+			table[i] = line;
 			table[i].isValid(kFalse);
 		}
 	}
@@ -20,12 +25,12 @@ namespace cache
 	void Set::PutWord(Tag firstTag, Tag currentTag, int index, void* data, int length, bool isFinal)
 	{
 		int targetLine = firstTag % nLines_;
-		table[targetLine].getWordsMap()[index].tag = currentTag;
-		table[targetLine].getWordsMap()[index].length = length;
+		table[targetLine].getWordsMapEntry(index)->tag = currentTag;
+		table[targetLine].getWordsMapEntry(index)->length = length;
 
-		Word* sourceWordBegin = (Word*)data;
-		Word* sourceWordEnd = (Word*)((Byte*)data + length);
-		Word* destWordBegin = &table[targetLine].getWords()[index];
+		Byte* sourceWordBegin = (Byte*)data;
+		Byte* sourceWordEnd = (Byte*)data + length;
+		Byte* destWordBegin = (Byte*)table[targetLine].getWord(index);
 
 		std::copy(sourceWordBegin, sourceWordEnd, destWordBegin);
 
@@ -39,13 +44,13 @@ namespace cache
 
 	int Set::FindLine(Tag tag, bool invalidate)
 	{
-		int backTraceDistance = WORDS_PER_LINE * 2;
+		int backTraceDistance = wordsInLine_ * 2;
 		Tag firstTag = (tag - backTraceDistance > 0) ? tag - backTraceDistance : 0;
 		for (int t = firstTag; t <= tag; ++t)
 		{
 			int candidateLine = t % nLines_;
 
-			if (table[candidateLine].isValid() == kTrue)
+			if (table[candidateLine].isValid())
 			{
 				if (inRange(table[candidateLine].getLinePrefixPtr()->firstTag
 					, table[candidateLine].getLinePrefixPtr()->lastTag, tag))
@@ -64,12 +69,12 @@ namespace cache
 
 	void* Set::FindWord(Tag tag, int line, int* length)
 	{
-		for (int i = 0; i < WORDS_PER_LINE; ++i)
+		for (int i = 0; i < wordsInLine_; ++i)
 		{
-			if (tag == (table[line].getWordsMap()[i]).tag)
+			if (tag == table[line].getWordsMapEntry(i)->tag)
 			{
-				*length = (table[line].getWordsMap()[i]).length;
-				return &(table[line].getWords()[i]);
+				*length = table[line].getWordsMapEntry(i)->length;
+				return table[line].getWord(i);
 			}
 		}
 		return 0;

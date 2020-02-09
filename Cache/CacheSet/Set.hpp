@@ -2,80 +2,110 @@
 #define SET_H
 
 #include <vector>
-#include "SetAllocator.hpp"
+//#include "SetAllocator.hpp"
 
 namespace cache
 {
 	typedef unsigned char	Byte;
 	typedef int				Tag;
 
-	const unsigned int WORD_SIZE = 8;
-	const unsigned int WORDS_PER_LINE = 4;
+	//const unsigned int WORD_SIZE = 8;
+	//const unsigned int WORDS_PER_LINE = 4;
 
 #pragma pack(1)
-	class WordsMapEntry
+	typedef struct
 	{
 	public:
 		int		tag;
 		int		length; // length of serialized data
-	};
+	} WordsMapEntry, *WordsMapEntryPtr;
 
 	class Word
 	{
 	public:
-		typedef std::vector<Byte, PreAllocator<Byte> >		Buffer;
-		Word(Byte* beg, std::size_t memory_size)
-			:buffer_(0, PreAllocator<Byte>(beg, memory_size))
+		typedef Byte*		Buffer;
+		Word()
+			:buffer_(nullptr)
 		{
-
 		}
-		Buffer::iterator begin() { return buffer_.begin(); }
-		Buffer::iterator end() { return buffer_.end(); }
-		//private:
+		private:
 		Buffer			buffer_; //[WORD_SIZE];
 	};
+
+#pragma pack(1)
+	typedef struct LinePrefixTag
+	{
+		LinePrefixTag()
+			: isValid(-1)
+			, firstTag(0)
+			, lastTag(0)
+		{
+		}
+
+		int					isValid;
+		Tag					firstTag;
+		Tag					lastTag;
+	} LinePrefix, *LinePrefixPtr;
 
 #pragma pack(1)
 	class Line
 	{
 	public:
-		typedef struct
+		
+		typedef WordsMapEntry*		WordsMapPtr;
+		typedef Byte*				WordsPtr;
+		
+		Line()
+			: wordsInLine_(0)
+			, wordSize_(0)
+			, linePrefixPtr_(nullptr)
+			, wordsMap_(nullptr)
+			, words_(nullptr)
 		{
-			int					isValid;
-			Tag					firstTag;
-			Tag					lastTag;
-		} LinePrefix, *LinePrefixPtr;
-
-		typedef std::vector<WordsMapEntry, PreAllocator<WordsMapEntry> >	WordsMap;
-		typedef std::vector<Word, PreAllocator<Word> >						Words;
+		}
 
 		Line(int wordsInLine, int wordSize, Byte* lineBeg)
-			: linePrefixPtr_((LinePrefixPtr)lineBeg)
-			/*, wordsMap_(0, SetAllocator<WordsMap>((WordsMapEntry*)((Byte*)linePrefixPtr_ + sizeof(LinePrefix))
-			, sizeof(WordsMapEntry) * wordsInLine))*/
-			//, words_(0, SetAllocator<Byte>((Byte*)(&wordsMap_[0]) + sizeof(WordsMapEntry) * wordsInLine, wordsInLine * wordSize))
+			: wordsInLine_(wordsInLine)
+			, wordSize_(wordSize)
+			, linePrefixPtr_((LinePrefixPtr)lineBeg)
+			, wordsMap_((WordsMapPtr)((Byte*)linePrefixPtr_ + sizeof(LinePrefix)))
+			, words_((WordsPtr)((Byte*)(&wordsMap_[0]) + sizeof(WordsMapEntry) * wordsInLine))
 		{
-			WordsMapEntry* wordsMapEntry = (WordsMapEntry*)((Byte*)linePrefixPtr_ + sizeof(LinePrefix));
-			size_t size = sizeof(WordsMapEntry) * wordsInLine;
-			wordsMap_(PreAllocator<WordsMapEntry>(wordsMapEntry, size));
 		}
-		LinePrefixPtr getLinePrefixPtr() { return linePrefixPtr_; }
-		WordsMap& getWordsMap() { return wordsMap_; }
-		Words& getWords() { return words_; }
-		bool isValid() { linePrefixPtr_->isValid; }
-		bool isValid(bool value) { linePrefixPtr_->isValid = value; }
+		Line& operator=(Line& rhs)
+		{
+			if (this != &rhs)
+			{
+				wordsInLine_	= rhs.wordsInLine_;
+				wordSize_		= rhs.wordSize_;
+				linePrefixPtr_	= rhs.linePrefixPtr_;
+				wordsMap_		= rhs.wordsMap_;
+				words_			= rhs.words_;
+			}
+			return *this;
+		}
 
-		//private:		
-		LinePrefixPtr		linePrefixPtr_;
-		WordsMap			wordsMap_;	// -1 indicates empty (NULL) entry
-		Words				words_;
+		LinePrefixPtr getLinePrefixPtr() { return linePrefixPtr_; }
+		WordsMapEntryPtr getWordsMapEntry(size_t i) { return WordsMapEntryPtr((Byte*)wordsMap_ + i * sizeof(WordsMapEntry)); }
+		Byte* getWord(size_t i) { return (Byte*)words_ + i * wordSize_; }
+		bool isValid() { return linePrefixPtr_->isValid == 1; }
+		void isValid(int value) { linePrefixPtr_->isValid = value; }
+
+		private:
+			int wordsInLine_;
+			int wordSize_;
+			LinePrefixPtr		linePrefixPtr_;
+			WordsMapPtr			wordsMap_;	// -1 indicates empty (NULL) entry
+			WordsPtr			words_;
 	};
 
 	class Set
 	{
-		//private:
-	public:
-		const int nLines_;
+	private:
+		const int			nLines_;
+		const int			wordsInLine_;
+		const size_t		kBytesInLine;
+		Byte*				buffer_;
 		std::vector<Line>	table; // metainformation about set memory
 	public:
 		const int kTrue = 1;
