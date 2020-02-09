@@ -7,72 +7,73 @@
 namespace cache
 {
 
-Set::Set(int numberOfLines)
-	: nLines_(numberOfLines)
-	, table(numberOfLines)
-{
-	for (int i = 0; i < numberOfLines; ++i)
+	Set::Set(int numberOfLines, int wordsInLine, int wordSize)
+		: nLines_(numberOfLines)
+		, table(numberOfLines)
 	{
-		table[i].isValid = kFalse;
-	}
-}
-
-void Set::PutWord(Tag firstTag, Tag currentTag, int index, void* data, int length, bool isFinal)
-{
-	int targetLine = firstTag % nLines_;
-	table[targetLine].wordsMap[index].tag = currentTag;
-	table[targetLine].wordsMap[index].length = length;
-	
-	Word* sourceWordBegin	= (Word*)data;
-	Word* sourceWordEnd		= (Word*)((Byte*)data + length);
-	Word* destWordBegin = &table[targetLine].words[index];
-	
-	std::copy(sourceWordBegin, sourceWordEnd, destWordBegin);
-	
-	if (isFinal)
-	{
-		table[targetLine].isValid = kTrue;
-		table[targetLine].firstTag = firstTag;
-		table[targetLine].lastTag = currentTag;
-	}
-}
-
-int Set::FindLine(Tag tag, bool invalidate)
-{
-	int backTraceDistance = WORDS_PER_LINE * 2;
-	Tag firstTag = (tag - backTraceDistance > 0) ? tag - backTraceDistance : 0;
-	for (int t = firstTag; t <= tag; ++t)
-	{
-		int candidateLine = t % nLines_;
-
-		if (table[candidateLine].isValid == kTrue)
+		for (int i = 0; i < numberOfLines; ++i)
 		{
-			if (inRange(table[candidateLine].firstTag, table[candidateLine].lastTag, tag))
+			table[i].isValid(kFalse);
+		}
+	}
+
+	void Set::PutWord(Tag firstTag, Tag currentTag, int index, void* data, int length, bool isFinal)
+	{
+		int targetLine = firstTag % nLines_;
+		table[targetLine].getWordsMap()[index].tag = currentTag;
+		table[targetLine].getWordsMap()[index].length = length;
+
+		Word* sourceWordBegin = (Word*)data;
+		Word* sourceWordEnd = (Word*)((Byte*)data + length);
+		Word* destWordBegin = &table[targetLine].getWords()[index];
+
+		std::copy(sourceWordBegin, sourceWordEnd, destWordBegin);
+
+		if (isFinal)
+		{
+			table[targetLine].isValid(kTrue);
+			table[targetLine].getLinePrefixPtr()->firstTag = firstTag;
+			table[targetLine].getLinePrefixPtr()->lastTag = currentTag;
+		}
+	}
+
+	int Set::FindLine(Tag tag, bool invalidate)
+	{
+		int backTraceDistance = WORDS_PER_LINE * 2;
+		Tag firstTag = (tag - backTraceDistance > 0) ? tag - backTraceDistance : 0;
+		for (int t = firstTag; t <= tag; ++t)
+		{
+			int candidateLine = t % nLines_;
+
+			if (table[candidateLine].isValid() == kTrue)
 			{
-				if (invalidate)
+				if (inRange(table[candidateLine].getLinePrefixPtr()->firstTag
+					, table[candidateLine].getLinePrefixPtr()->lastTag, tag))
 				{
-					table[candidateLine].isValid = kFalse;
-					return kFalse;
+					if (invalidate)
+					{
+						table[candidateLine].isValid(kFalse);
+						return kFalse;
+					}
+					return candidateLine;
 				}
-				return candidateLine;
 			}
 		}
+		return kNotFound; // not found
 	}
-	return kNotFound; // not found
-}
 
-void* Set::FindWord(Tag tag, int line, int* length)
-{
-	for (int i = 0; i < WORDS_PER_LINE; ++i)
+	void* Set::FindWord(Tag tag, int line, int* length)
 	{
-		if (tag == (table[line].wordsMap[i]).tag)
+		for (int i = 0; i < WORDS_PER_LINE; ++i)
 		{
-			*length = (table[line].wordsMap[i]).length;
-			return &(table[line].words[i]);
+			if (tag == (table[line].getWordsMap()[i]).tag)
+			{
+				*length = (table[line].getWordsMap()[i]).length;
+				return &(table[line].getWords()[i]);
+			}
 		}
+		return 0;
 	}
-	return 0;
-}
 
 
 } // namespace cache
