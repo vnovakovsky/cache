@@ -47,6 +47,17 @@ namespace Cache
         // write-through approach
         public void SaveLine(int setIndex, Tag tag, List<Word> words)
         {
+            // check preconditions
+            foreach(var w in words)
+            {
+                if (w.Buffer.Length > CacheGeometry.WordSize)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        string.Format("Supplied word with length {0}B exeeds cache word buffer with size {1}B"
+                                                                  , w.Buffer.Length, CacheGeometry.WordSize));
+                }
+            }
+
             sets_[setIndex].PutWord(tag, words);
         }
     }
