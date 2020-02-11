@@ -16,7 +16,7 @@ namespace cache
 	{
 		for (int i = 0; i < numberOfLines; ++i)
 		{
-			Line line(wordsInLine, wordSize, buffer_ + i * kBytesInLine);
+			Line line(wordsInLine, wordSize, buffer_.get() + i * kBytesInLine);
 			table[i] = line;
 			table[i].isValid(kFalse);
 		}

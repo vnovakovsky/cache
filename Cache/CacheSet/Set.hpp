@@ -1,8 +1,9 @@
 #ifndef SET_H
 #define SET_H
 
+#include <memory>
 #include <vector>
-//#include "SetAllocator.hpp"
+
 
 namespace cache
 {
@@ -102,11 +103,11 @@ namespace cache
 	class Set
 	{
 	private:
-		const int			nLines_;
-		const int			wordsInLine_;
-		const size_t		kBytesInLine;
-		Byte*				buffer_;
-		std::vector<Line>	table; // metainformation about set memory
+		const int				nLines_;
+		const int				wordsInLine_;
+		const size_t			kBytesInLine;
+		std::unique_ptr<Byte>	buffer_; // owns memory used for set lines (payload)
+		std::vector<Line>		table; // metainformation about set memory
 	public:
 		const int kTrue = 1;
 		const int kFalse = -1;
