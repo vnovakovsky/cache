@@ -10,9 +10,9 @@ using Mocks;
 namespace Tests.Cache.CacheControllerTest
 {
     [TestClass]
-    public class CacheController_Read_LRU_DB_Test
+    public class Controller_Read_LRU_DB_Test
     {
-        IStorage<int> databaseStorage_ = null;
+        protected IStorage<int> databaseStorage_ = null;
         const int kNumberOfWays = 4;
         const int kLinesDegree = 4;
         const int kWordsInLine = 4;
@@ -22,7 +22,7 @@ namespace Tests.Cache.CacheControllerTest
         const int kMaxSequentialUserID = 290;
         
 
-        ICacheController<int> CreateController()
+        protected virtual ICacheController<int> CreateController()
         {
             databaseStorage_ = new DatabaseStorage<int, string>();
 

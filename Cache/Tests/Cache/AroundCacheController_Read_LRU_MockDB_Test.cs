@@ -10,10 +10,8 @@ using Mocks;
 namespace Tests.Cache.CacheControllerTest
 {
     [TestClass]
-    public class CacheController_Read_LRU_MockDB_Test
+    public class Controller_Read_LRU_MockDB_Test : Controller_Read_LRU_DB_Test
     {
-        CacheController_Read_LRU_DB_Test dbTest = new CacheController_Read_LRU_DB_Test();
-        IStorage<int> databaseStorage_ = null;
         const int kNumberOfWays = 4;
         const int kLinesDegree = 4;
         const int kWordsInLine = 4;
@@ -23,7 +21,7 @@ namespace Tests.Cache.CacheControllerTest
         const int kMaxSequentialUserID = 290;
 
 
-        ICacheController<int> CreateController()
+        protected override ICacheController<int> CreateController()
         {
             databaseStorage_ = new DatabaseStorageMock<int, string>();
             FillDatabaseTest();
@@ -39,34 +37,34 @@ namespace Tests.Cache.CacheControllerTest
             return cacheController;
         }
         [TestMethod]
-        public void ReadWordTest1_SelectedTags()
+        public new void ReadWordTest1_SelectedTags()
         {
-            dbTest.ReadWordTest1_SelectedTags();
+            base.ReadWordTest1_SelectedTags();
         }
         [TestMethod]
-        public void ReadWordTest2_Sequential()
+        public new void ReadWordTest2_Sequential()
         {
-            dbTest.ReadWordTest2_Sequential();
+            base.ReadWordTest2_Sequential();
         }
         [TestMethod]
-        public void ReadWordTest3_Sequential()
+        public new void ReadWordTest3_Sequential()
         {
-            dbTest.ReadWordTest3_Sequential();
+            base.ReadWordTest3_Sequential();
         }
         [TestMethod]
-        public void ReadWordTest4_Sequential()
+        public new void ReadWordTest4_Sequential()
         {
-            dbTest.ReadWordTest4_Sequential();
+            base.ReadWordTest4_Sequential();
         }
         [TestMethod]
-        public void ReadWordTest5_FirstRepresentativeZero()
+        public new void ReadWordTest5_FirstRepresentativeZero()
         {
-            dbTest.ReadWordTest5_FirstRepresentativeZero();
+            base.ReadWordTest5_FirstRepresentativeZero();
         }
         [TestMethod]
-        public void ReadWordTest6_AllRepresentatives()
+        public new void ReadWordTest6_AllRepresentatives()
         {
-            dbTest.ReadWordTest6_AllRepresentatives();
+            base.ReadWordTest6_AllRepresentatives();
         }
         public void FillDatabaseTest()
         {
