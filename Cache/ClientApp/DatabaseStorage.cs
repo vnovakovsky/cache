@@ -1,4 +1,5 @@
 ﻿using Cache;
+using System.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,8 +14,9 @@ namespace ClientApp
         SqlConnection connection_;
         internal DatabaseStorage()
         {
+            string dataSourceString = ConfigurationManager.AppSettings["DataSourceString"];
             connection_ = new SqlConnection(
-              "server=WOOD;uid=CacheUser;pwd=CacheUser;database=AdventureWorks");
+            dataSourceString); //"server=WOOD;uid=CacheUser;pwd=CacheUser;database=AdventureWorks");
             connection_.Open();
         }
         // not used

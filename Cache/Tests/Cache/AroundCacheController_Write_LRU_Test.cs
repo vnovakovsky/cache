@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Configuration;
 using Cache;
 using Cache.CacheController;
 using Cache.ReplacementStrategy;
@@ -13,10 +14,18 @@ namespace Tests.Cache.CacheControllerTest
     public class AroundCacheController_Write_LRU_Test
     {
         DatabaseStorageMock<int, string> databaseStorage_ = new DatabaseStorageMock<int, string>();
-        const int kNumberOfWays = 4;
-        const int kLinesDegree = 4;
-        const int kWordsInLine = 4;
-        const int kWordSize = 8;
+        readonly int kNumberOfWays; //= 4;
+        readonly int kLinesDegree;  //= 4;
+        readonly int kWordsInLine;  //= 4;
+        readonly int kWordSize;     //= 8;
+
+        public AroundCacheController_Write_LRU_Test()
+        {
+            kNumberOfWays   = int.Parse(ConfigurationManager.AppSettings["NumberOfWays"]);
+            kLinesDegree    = int.Parse(ConfigurationManager.AppSettings["LinesDegree"]);
+            kWordsInLine    = int.Parse(ConfigurationManager.AppSettings["WordsInLine"]);
+            kWordSize       = int.Parse(ConfigurationManager.AppSettings["WordSize"]);
+        }
 
         ICacheController<int> CreateController()
         {

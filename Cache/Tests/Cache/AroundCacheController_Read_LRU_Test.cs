@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Text;
 using Cache;
 using Cache.CacheController;
@@ -13,14 +14,21 @@ namespace Tests.Cache.CacheControllerTest
     public class Controller_Read_LRU_DB_Test
     {
         protected IStorage<int> databaseStorage_ = null;
-        const int kNumberOfWays = 4;
-        const int kLinesDegree = 4;
-        const int kWordsInLine = 4;
-        const int kWordSize = 8;
+        readonly int kNumberOfWays; //= 4;
+        readonly int kLinesDegree;  //= 4;
+        readonly int kWordsInLine;  //= 4;
+        readonly int kWordSize;     //= 8;
 
         const int kMinSequentialUserID = 1; // database contains continuous sequence (without gaps)
         const int kMaxSequentialUserID = 290;
-        
+
+        public Controller_Read_LRU_DB_Test()
+        {
+            kNumberOfWays   = int.Parse(ConfigurationManager.AppSettings["NumberOfWays"]);
+            kLinesDegree    = int.Parse(ConfigurationManager.AppSettings["LinesDegree"]);
+            kWordsInLine    = int.Parse(ConfigurationManager.AppSettings["WordsInLine"]);
+            kWordSize       = int.Parse(ConfigurationManager.AppSettings["WordSize"]);
+        }
 
         protected virtual ICacheController<int> CreateController()
         {
