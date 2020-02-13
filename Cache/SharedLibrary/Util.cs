@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -31,6 +33,15 @@ namespace Cache
             Object obj = (Object)binForm.Deserialize(ms);
 
             return obj;
+        }
+        public static R Convert<R, T>(T value)
+        {
+            return (R)System.Convert.ChangeType(value, typeof(T));
+            //TypeConverter converter =
+            //    TypeDescriptor.GetConverter(typeof(T));
+
+            //return (R)converter.ConvertFrom(null,
+            //    CultureInfo.InvariantCulture, value);
         }
     }
     public static class Functor

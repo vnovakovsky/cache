@@ -8,14 +8,14 @@ using System.Text;
 
 namespace ClientApp
 {
-    class DatabaseStorage<Key, Value> : Cache.IStorage<Key>
+    class DatabaseStorage<Key, Value> : Cache.IStorage<Key> where Key : unmanaged, IComparable
     {
-        SqlConnection conn_;
+        SqlConnection connection_;
         internal DatabaseStorage()
         {
-            conn_ = new SqlConnection(
+            connection_ = new SqlConnection(
               "server=WOOD;uid=CacheUser;pwd=CacheUser;database=AdventureWorks");
-            conn_.Open();
+            connection_.Open();
         }
         // not used
         public byte[] ReadWord(Key key)
@@ -26,7 +26,7 @@ namespace ClientApp
         public void WriteWord(Key key, byte[] binWord)
         {
             SqlCommand cmd = new SqlCommand(
-              "update_new_employee", conn_);
+              "update_new_employee", connection_);
             try
             {
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -78,7 +78,7 @@ namespace ClientApp
         public List<Cache.Word> ReadLine(Key tag, int wordsInLine)
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Connection = conn_;
+            cmd.Connection = connection_;
             StringBuilder sb = new StringBuilder();
             sb.Append("SELECT TOP(");
             sb.Append(wordsInLine);
@@ -126,8 +126,13 @@ namespace ClientApp
                     employee.VacationHours =                reader.GetInt16(reader.GetOrdinal("VacationHours"));
                     employee.SickLeaveHours =               reader.GetInt16(reader.GetOrdinal("SickLeaveHours"));
 
-                    Word word = new Word(iTag, Util.ObjectToByteArray(employee), Word.NULL);
+                    Word word = new Word(int.Parse(employee.UserID), Util.ObjectToByteArray(employee), Word.NULL);
                     words.Add(word);
+                    if(words[0].Tag != iTag) // requested tag should be present - it goes first
+                    {
+                        words.Clear();
+                        return words; // if requested tag doesn't exist then return empty list
+                    }
                 }
                 reader.Close();
             }
@@ -148,10 +153,31 @@ namespace ClientApp
 
             return words;
         }
+        public int GetMaxRecordLength()
+        {
+            SqlCommand command = new SqlCommand(
+            @"SELECT max_record_size_in_bytes 
+              FROM sys.dm_db_index_physical_stats(
+                                                DB_ID(N'AdventureWorks')
+                                              , OBJECT_ID(N'[AdventureWorks].[Cache].[Employee]')
+                                              , NULL, NULL, 'DETAILED')", connection_);
+            int maxRecordLength = (int)command.ExecuteScalar();
+            return maxRecordLength;
+        }
         public bool EOF(Key key)
         {
-            List<Word> words = ReadLine(key, 1);
-            return words.Count == 0;
+            return key.CompareTo(MaxKey) > 0;
+        }
+        private Key MaxKey
+        {
+            get
+            {
+                SqlCommand command = new SqlCommand(
+                @"SELECT max([UserID])
+                  FROM [AdventureWorks].[Cache].[Employee]", connection_);
+                int maxUserID = (int)command.ExecuteScalar();
+                return Util.Convert<Key, int>(maxUserID);
+            }
         }
         protected virtual void Dispose(bool disposing)
         {
@@ -159,8 +185,8 @@ namespace ClientApp
             {
                 try
                 {
-                    if (conn_.State == ConnectionState.Open)
-                        conn_.Close();
+                    if (connection_.State == ConnectionState.Open)
+                        connection_.Close();
                 }
                 catch (Exception e)
                 {

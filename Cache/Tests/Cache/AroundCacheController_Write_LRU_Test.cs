@@ -25,7 +25,8 @@ namespace Tests.Cache.CacheControllerTest
             CacheGeometry cacheGeometry = new CacheGeometry(numberOfWays: kNumberOfWays
                                                             , linesDegree: kLinesDegree
                                                             , wordsInLine: kWordsInLine
-                                                            , wordSize: kWordSize);
+                                                            , wordSize: kWordSize
+                                                            , 2);
             IReplacementStrategy<int> replacementStrategy = new LRUStrategy<int>(cacheGeometry);
             ICacheController<int> cacheController =
                 CacheFactory<int>.Create(cacheGeometry, databaseStorage_, replacementStrategy);

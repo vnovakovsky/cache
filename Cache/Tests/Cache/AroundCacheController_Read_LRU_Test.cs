@@ -3,28 +3,35 @@ using System.Text;
 using Cache;
 using Cache.CacheController;
 using Cache.ReplacementStrategy;
+using ClientApp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mocks;
 
 namespace Tests.Cache.CacheControllerTest
 {
     [TestClass]
-    public class CacheController_Read_LRU_Test
+    public class CacheController_Read_LRU_DB_Test
     {
-        DatabaseStorageMock<int, string> databaseStorage_ = new DatabaseStorageMock<int, string>();
+        IStorage<int> databaseStorage_ = null;
         const int kNumberOfWays = 4;
         const int kLinesDegree = 4;
         const int kWordsInLine = 4;
         const int kWordSize = 8;
 
+        const int kMinSequentialUserID = 1; // database contains continuous sequence (without gaps)
+        const int kMaxSequentialUserID = 290;
+        
+
         ICacheController<int> CreateController()
         {
-            databaseStorage_.database_.Clear();
-            FillDatabaseTest();
+            databaseStorage_ = new DatabaseStorage<int, string>();
+
+
             CacheGeometry cacheGeometry = new CacheGeometry(numberOfWays: kNumberOfWays
                                                             , linesDegree: kLinesDegree
                                                             , wordsInLine: kWordsInLine
-                                                            , wordSize: kWordSize);
+                                                            , wordSize: kWordSize
+                                                            , 2);
             IReplacementStrategy<int> replacementStrategy = new LRUStrategy<int>(cacheGeometry);
             ICacheController<int> cacheController =
                 CacheFactory<int>.Create(cacheGeometry, databaseStorage_, replacementStrategy);
@@ -38,10 +45,12 @@ namespace Tests.Cache.CacheControllerTest
             Word word42     = cacheController.ReadWord(42);
             Word word42Hit  = cacheController.ReadWord(42); // read hit
             Assert.AreEqual(word42.Tag, word42Hit.Tag);
+            Assert.AreEqual(word42Hit.isCached, true);
 
             Word word = cacheController.ReadWord(43);
             Word wordHit = cacheController.ReadWord(43); // read hit
             Assert.AreEqual(word.Tag, wordHit.Tag);
+            Assert.AreEqual(wordHit.isCached, true);
         }
         [TestMethod]
         public void ReadWordTest2_Sequential()
@@ -52,7 +61,10 @@ namespace Tests.Cache.CacheControllerTest
             {
                 Word word = cacheController.ReadWord(i);
                 Word wordHit = cacheController.ReadWord(i); // read hit second time for the same word
-                Assert.AreEqual(word.Tag, wordHit.Tag);
+                if (!wordHit.IsEmpty)
+                {
+                    Assert.AreEqual(word.Tag, wordHit.Tag);
+                }
             } while (!databaseStorage_.EOF(++i));
 
         }
@@ -60,14 +72,12 @@ namespace Tests.Cache.CacheControllerTest
         public void ReadWordTest3_Sequential()
         {
             ICacheController<int> cacheController = CreateController();
-            const int wordsInLine = 4;
             // if line consists from n words then word0...wordn-1 will be not chached when word0 requested first time
             // but subsequent reading of word1..wordn-1 will hit
-            int i = 0;
-            do
-            {
+            for(int i = kMinSequentialUserID; i <= kMaxSequentialUserID; ++i)
+            { 
                 Word word = cacheController.ReadWord(i);
-                if (i % wordsInLine == 0)
+                if (i % kWordsInLine == 1)
                 {
                     Assert.AreEqual(word.isCached, false); // miss for word0
                 }
@@ -75,19 +85,25 @@ namespace Tests.Cache.CacheControllerTest
                 {
                     Assert.AreEqual(word.isCached, true); // hit for word1..wordn-1
                 }
-            } while (!databaseStorage_.EOF(i++));
+            }
+            Word word291 = cacheController.ReadWord(291);
+            Assert.IsTrue(word291.IsEmpty);
+
+            Word word999 = cacheController.ReadWord(999);
+            Assert.AreEqual(word999.isCached, true);
         }
         [TestMethod]
         public void ReadWordTest4_Sequential()
         {
             ICacheController<int> cacheController = CreateController();
-            const int wordsInLine = 4;
 
             int i = 0;
             do
             {
                 Word word = cacheController.ReadWord(i);
-                if (i % wordsInLine == 0)
+                if (word.IsEmpty)
+                    continue;
+                if (i % kWordsInLine == 1)
                 {
                     Assert.AreEqual(word.isCached, false); // miss
                     word = cacheController.ReadWord(i);
@@ -107,9 +123,9 @@ namespace Tests.Cache.CacheControllerTest
 
             // iterate throug all members of class [0] = Z linesPerSet_Mod = Z mod linesPerSet_Mod
             // rep = representative
-            int rep = 0;
+            int rep = kMinSequentialUserID;
             for (int c = 0, tag = rep + linesPerSet_Mod * c;
-                    tag < databaseStorage_.MaxKey();
+                    tag <= kMaxSequentialUserID;
                     ++c, tag = rep + linesPerSet_Mod * c)
             {
                 Word word = cacheController.ReadWord(tag);
@@ -124,39 +140,18 @@ namespace Tests.Cache.CacheControllerTest
 
             // iterate throug all representatives of ring (Z mod linesPerSet_Mod): [0], [1], ..., [linesPerSet_Mod - 1]
             // rep = representative
-            for (int rep = 0; rep < linesPerSet_Mod; ++rep)
+            for (int rep = kMinSequentialUserID; rep < linesPerSet_Mod; ++rep)
             {
                 // iterate throug all members of class [a] = Z linesPerSet_Mod = Z mod linesPerSet_Mod
                 // [a] = {x: z mod linesPerSet_Mod == a, z E Z}
                 for (int c = 0, tag = rep + linesPerSet_Mod * c;
-                    tag < databaseStorage_.MaxKey();
+                    tag <= kMaxSequentialUserID;
                     ++c, tag = rep + linesPerSet_Mod * c)
                 {
                     Word word = cacheController.ReadWord(tag);
                     Assert.AreEqual(word.SetIndex, c % kNumberOfWays);
                 }
             }
-        }
-        private void ReadWord(CacheController<int> cacheController, int tag)
-        {
-            Word word = cacheController.ReadWord(tag);
-            Word wordHit = cacheController.ReadWord(tag); // read hit
-            Assert.AreEqual(word.Tag, wordHit.Tag);
-        }
-        [TestMethod]
-        public void FillDatabaseTest()
-        {
-            for(int i = 0; i < Math.Pow(2, 8); ++i)
-            {
-                string s = string.Format("test{0:0000}", i);
-                databaseStorage_.WriteWord(i, Convert(s));
-            }
- 
-            Assert.AreEqual(databaseStorage_.database_.Count, Math.Pow(2, 8));
-        }
-        static byte[] Convert(string inValue)
-        {
-            return Encoding.ASCII.GetBytes(inValue);
         }
     }
 }

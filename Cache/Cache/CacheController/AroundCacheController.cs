@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Cache.CacheController
 {
-    public class AroundCacheController<Tag> : CacheController<Tag> where Tag : unmanaged
+    public class AroundCacheController<Tag> : CacheController<Tag> where Tag : unmanaged, IComparable
     {
         public AroundCacheController(CacheGeometry cacheGeometry, IStorage<Tag> storage) 
             : base(cacheGeometry, storage)

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Mocks
 {
-    class DatabaseStorageMock<Key, Value> : IStorage<Key> where Key : IComparable// where W : new() 
+    class DatabaseStorageMock<Key, Value> : IStorage<Key> where Key : unmanaged, IComparable// where W : new() 
     {
         public Dictionary<Key, Value> database_;
         public DatabaseStorageMock()
@@ -40,6 +40,11 @@ namespace Mocks
                 {
                     Word storageWord = new Word(i, storageBytes, -1);
                     words.Add(storageWord);
+                    if(words[0].Tag != iTag) // requested tag should be present - otherwise discard all list
+                    {
+                        words.Clear();
+                        return words;
+                    }
                     ++n;
                 }
             }
@@ -82,6 +87,16 @@ namespace Mocks
             else
                 return false;
             //return 0 == key.CompareTo(database_.Keys.Max());
+        }
+        public int GetMaxRecordLength()
+        {
+            int maxRecordLength = 0;
+            foreach(var v in database_.Values)
+            {
+                if (v.ToString().Length > maxRecordLength)
+                    maxRecordLength = v.ToString().Length;
+            }
+            return maxRecordLength;
         }
         public Key MaxKey()
         {

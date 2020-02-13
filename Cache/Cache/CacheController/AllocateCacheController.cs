@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cache.CacheController
 {
-    public class AllocateCacheController<Tag> : CacheController<Tag> where Tag : unmanaged
+    public class AllocateCacheController<Tag> : CacheController<Tag> where Tag : unmanaged, IComparable
     {
         public AllocateCacheController(CacheGeometry cacheGeometry, IStorage<Tag> storage)
             : base(cacheGeometry, storage)

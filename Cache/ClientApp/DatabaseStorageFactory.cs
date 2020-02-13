@@ -14,7 +14,7 @@ namespace ClientApp
             Tag tag = default;
             int obj = Util.ConvertToInt(tag);
 
-            return new DatabaseStorageMock<Tag, string>();
+            return new DatabaseStorage<Tag, string>();
         }
     }
 }
