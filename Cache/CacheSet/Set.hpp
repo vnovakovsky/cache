@@ -5,7 +5,7 @@
 #include <vector>
 
 
-namespace cache
+namespace CacheSet
 {
 	typedef unsigned char	Byte;
 	typedef int				Tag;
@@ -13,22 +13,9 @@ namespace cache
 #pragma pack(1)
 	typedef struct
 	{
-	public:
 		int		tag;
 		int		length; // length of serialized data
 	} WordsMapEntry, *WordsMapEntryPtr;
-
-	class Word
-	{
-	public:
-		typedef Byte*		Buffer;
-		Word()
-			:buffer_(nullptr)
-		{
-		}
-	private:
-		Buffer			buffer_;
-	};
 
 #pragma pack(1)
 	typedef struct LinePrefixTag
@@ -99,7 +86,7 @@ namespace cache
 		inline Byte*			getLinePrefixEnd() { return (Byte*)linePrefixPtr_ + sizeof(LinePrefix); }
 		inline WordsMapEntryPtr getWordsMapEntry(const size_t i)
 		{
-			return WordsMapEntryPtr((Byte*)wordsMap_ + i * sizeof(WordsMapEntry));
+			return (WordsMapEntryPtr)((Byte*)wordsMap_ + i * sizeof(WordsMapEntry));
 		}
 		inline Byte*			getWordsMapEnd() { return (Byte*)getWordsMapEntry(wordsInLine_); }
 		inline Byte*			getWord(size_t i) { return (Byte*)words_ + i * wordSize_; }
@@ -136,5 +123,7 @@ namespace cache
 	};
 
 
-} // namespace cache
+} // namespace CacheSet
+
+
 #endif //SET_H

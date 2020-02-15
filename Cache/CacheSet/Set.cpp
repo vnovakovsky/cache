@@ -5,7 +5,7 @@
 
 #include "Set.hpp"
 
-namespace cache
+namespace CacheSet
 {
 
 	Set::Set(int numberOfLines, int wordsInLine, int wordSize)
