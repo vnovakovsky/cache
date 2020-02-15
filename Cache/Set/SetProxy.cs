@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Cache.Set.Cs
 {
-    public class SetProxy
+    public class SetProxy : ISet
     {
         
         Set set_;

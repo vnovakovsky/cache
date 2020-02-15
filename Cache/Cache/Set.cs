@@ -5,22 +5,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Cache.Set.Cs;
+
 
 namespace Cache
 {
     public class Set <Tag> where Tag : unmanaged, IComparable
     {
         private readonly int id_;
-        private readonly SetProxy setProxy_;
+        private readonly Cache.Set.ISet setProxy_;
         public Set(int numberOfLines, int wordsInLine, int wordSize, int id)
         {
             id_ = id;
-            SetProxy setProxy = new SetProxy(numberOfLines, wordsInLine, wordSize);
+            Cache.Set.ISet setProxy = SetFactory.Create(numberOfLines, wordsInLine, wordSize);
             setProxy_ = setProxy;
         }
 
-        public SetProxy SetProxy => setProxy_;
+        public Cache.Set.ISet SetProxy => setProxy_;
 
         public void PutWord(Tag tag, List<Word> data)
         {

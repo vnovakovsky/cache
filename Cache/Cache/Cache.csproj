@@ -38,6 +38,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -63,6 +64,7 @@
     <Compile Include="ReplacementStrategy\MRUStrategy.cs" />
     <Compile Include="ReplacementStrategy\RecentlyUsedStrategy.cs" />
     <Compile Include="Set.cs" />
+    <Compile Include="SetFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
