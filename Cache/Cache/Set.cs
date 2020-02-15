@@ -9,7 +9,7 @@ using Cache.Set.Cs;
 
 namespace Cache
 {
-    public class Set <Tag> where Tag : unmanaged
+    public class Set <Tag> where Tag : unmanaged, IComparable
     {
         private readonly int id_;
         private readonly SetProxy setProxy_;
