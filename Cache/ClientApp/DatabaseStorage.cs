@@ -27,11 +27,25 @@ namespace ClientApp
 
         public void WriteWord(Key key, byte[] binWord)
         {
-            SqlCommand cmd = new SqlCommand(
-              "update_new_employee", connection_);
+            string sqlString =
+               @"UPDATE [Cache].[Employee]
+                   SET 
+                      [NationalIDNumber] = @NationalIDNumber
+                      ,[LoginID] = @LoginID
+                      ,[OrganizationLevel] = @OrganizationLevel
+                      ,[JobTitle] = @JobTitle
+                      ,[BirthDate] = @BirthDate
+                      ,[MaritalStatus] = @MaritalStatus
+                      ,[Gender] = @Gender
+                      ,[HireDate] = @HireDate
+                      ,[VacationHours] = @VacationHours
+                      ,[SickLeaveHours] = @SickLeaveHours
+                 WHERE UserID = @UserID";
+
+            SqlCommand cmd = new SqlCommand(sqlString, connection_);
             try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandType = CommandType.Text;
 
                 cmd.Parameters.Add("@UserID", SqlDbType.NChar);
                 cmd.Parameters.Add("@NationalIDNumber", SqlDbType.NChar);
