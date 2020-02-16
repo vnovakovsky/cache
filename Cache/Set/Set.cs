@@ -147,7 +147,7 @@ namespace Cache.Set.Cs
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Exception: {0}", e.Message);
+                    Logger.LogError(e);
                 }
             }
         }

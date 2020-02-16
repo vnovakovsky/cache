@@ -10,13 +10,13 @@ namespace Tests.Cache
         [TestMethod]
         public void LogDebug()
         {
-            CacheLib.LogDebug("debug test string");
+            Logger.LogDebug("debug test string");
         }
 
         [TestMethod]
         public void LogInfo()
         {
-            CacheLib.LogInfo("info test string");
+            Logger.LogInfo("info test string");
         }
     }
 }

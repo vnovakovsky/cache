@@ -76,15 +76,15 @@ namespace ClientApp
 
                 int rows = cmd.ExecuteNonQuery();
 
-                Console.WriteLine("{0} rows affected", rows);
+                Logger.LogInfo(string.Format("update: {0} rows affected", rows));
             }
             catch (SqlException se)
             {
-                Console.WriteLine("SQL Exception: {0}", se.Message);
+                Logger.LogError(se);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception: {0}", e.Message);
+                Logger.LogError(e);
             }
             finally
             {
@@ -125,9 +125,6 @@ namespace ClientApp
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    Console.WriteLine("Employee name is {0} {1}",
-                      reader["UserID"], reader["LoginID"]);
-
                     Employee employee = new Employee();
 
                     employee.UserID =                       reader.GetInt32(reader.GetOrdinal("UserID")).ToString();
@@ -154,11 +151,11 @@ namespace ClientApp
             }
             catch (SqlException se)
             {
-                Console.WriteLine("SQL Exception: {0}", se.Message);
+                Logger.LogError(se);
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception: {0}", e.Message);
+                Logger.LogError(e);
             }
             finally
             {
@@ -206,7 +203,7 @@ namespace ClientApp
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Exception: {0}", e.Message);
+                    Logger.LogError(e);
                 }
             }
         }

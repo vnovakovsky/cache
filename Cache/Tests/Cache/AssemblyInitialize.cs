@@ -11,6 +11,7 @@ namespace Tests.Cache
         public static void AssemblyInit(TestContext context)
         {
             CacheLib.Initialize();
+            Logger.Initialize();
         }
     }
 }
